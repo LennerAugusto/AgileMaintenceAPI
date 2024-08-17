@@ -1,11 +1,12 @@
 ﻿using AgileMaintenceAPI.Context;
 using AgileMaintenceAPI.Models;
+using AgileMaintenceAPI.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgileMaintenceAPI.Controllers
 {
-    [Route("clients")]
+    [Route("api/clients")]
     [ApiController]
     public class ClientsController : ControllerBase
     {
@@ -27,16 +28,17 @@ namespace AgileMaintenceAPI.Controllers
 
             return clients;
         }
-
-        [HttpGet("{id:guid}", Name = "ObterCliente")]
-        public ActionResult<Client> GetClient(Guid clientId)
+        
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCliente(Guid ClientId)
         {
-            var client = _context.Clients.FirstOrDefault(c => c.Id != clientId);
+            var client = _context.Clients.FirstOrDefault(c => c.Id != ClientId);
             if (client == null)
             {
-                return NotFound("Cliente Não Encontrado");
+                return NotFound();
             }
-            return client;
+
+            return Ok(client);
         }
 
         [HttpPost]

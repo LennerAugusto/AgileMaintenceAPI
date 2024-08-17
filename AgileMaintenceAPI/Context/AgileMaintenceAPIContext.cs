@@ -12,5 +12,8 @@ namespace AgileMaintenceAPI.Context
 
         public DbSet<Client> Clients { get; set; }  
         public DbSet<OrderService> OrderServices { get; set; }  
+        public DbSet<Adresses> Adresses { get; set; }
+
+    
     }
 }

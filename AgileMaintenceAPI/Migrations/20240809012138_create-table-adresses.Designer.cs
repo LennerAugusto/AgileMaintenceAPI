@@ -4,6 +4,7 @@ using AgileMaintenceAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgileMaintenceAPI.Migrations
 {
     [DbContext(typeof(AgileMaintenceAPIContext))]
-    partial class AgileMaintenceAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20240809012138_create-table-adresses")]
+    partial class createtableadresses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,8 +65,6 @@ namespace AgileMaintenceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
                     b.ToTable("Adresses");
                 });
 
@@ -71,6 +72,9 @@ namespace AgileMaintenceAPI.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("AdressesId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Cpf")
@@ -89,6 +93,8 @@ namespace AgileMaintenceAPI.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdressesId");
 
                     b.ToTable("Clients");
                 });
@@ -130,15 +136,11 @@ namespace AgileMaintenceAPI.Migrations
                     b.ToTable("OrderServices");
                 });
 
-            modelBuilder.Entity("AgileMaintenceAPI.Models.Adresses", b =>
+            modelBuilder.Entity("AgileMaintenceAPI.Models.Client", b =>
                 {
-                    b.HasOne("AgileMaintenceAPI.Models.Client", "Client")
-                        .WithMany("Adresses")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
+                    b.HasOne("AgileMaintenceAPI.Models.Adresses", null)
+                        .WithMany("Clients")
+                        .HasForeignKey("AdressesId");
                 });
 
             modelBuilder.Entity("AgileMaintenceAPI.Models.OrderService", b =>
@@ -152,10 +154,13 @@ namespace AgileMaintenceAPI.Migrations
                     b.Navigation("Client");
                 });
 
+            modelBuilder.Entity("AgileMaintenceAPI.Models.Adresses", b =>
+                {
+                    b.Navigation("Clients");
+                });
+
             modelBuilder.Entity("AgileMaintenceAPI.Models.Client", b =>
                 {
-                    b.Navigation("Adresses");
-
                     b.Navigation("OrderServices");
                 });
 #pragma warning restore 612, 618

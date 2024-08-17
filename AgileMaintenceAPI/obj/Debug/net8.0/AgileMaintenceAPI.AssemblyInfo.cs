@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AgileMaintenceAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e540e2fd313a9aaf42fba9e21fd99344d254e9cd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7f5b15da48d58a384a6312bd5b118f86a8d7522e")]
 [assembly: System.Reflection.AssemblyProductAttribute("AgileMaintenceAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AgileMaintenceAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

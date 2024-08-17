@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AgileMaintenceAPI.Controllers
 {
-    [Route("orderservices")]
+    [Route("api/orderservices")]
     [ApiController]
     public class OrdersServicesController : ControllerBase
     {
