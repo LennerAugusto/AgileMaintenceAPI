@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AgileMaintenceAPI.Controllers
 {
-    [Route("api/orderservices")]
+    [Route("api/order-services")]
     [ApiController]
     public class OrdersServicesController : ControllerBase
     {
@@ -17,19 +17,18 @@ namespace AgileMaintenceAPI.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet("get-all")]
         public ActionResult<IEnumerable<OrderServiceDTO>> GetOrderServices()
         {
             var orderServices = _context.OrderServices.Include(os => os.Client).Select(os => new OrderServiceDTO
             {
                 Id = os.Id,
-                ClientId = os.ClientId,
+               // ClientId = os.ClientId,
                 Vehicle = os.Vehicle,
                 Plate = os.Plate,
                 Defect = os.Defect,
                 DateInit = os.DateInit,
                 DateEnd = os.DateEnd,
-                isActive = os.IsActive,
                 Client = os.Client
             }).ToList();
 
@@ -41,8 +40,8 @@ namespace AgileMaintenceAPI.Controllers
             return Ok(orderServices);
         }
 
-        [HttpGet("{id:guid}")]
-        public ActionResult<OrderService> Get(Guid OrderId)
+        [HttpGet("get-by-id/{id:guid}")]
+        public ActionResult<OrderServiceEntity> Get(Guid OrderId)
         {
             var order = _context.OrderServices.FirstOrDefault(o => o.Id != OrderId);
             if (order == null)
@@ -54,8 +53,8 @@ namespace AgileMaintenceAPI.Controllers
         }
 
 
-        [HttpPost]
-        public ActionResult Post(OrderService orderService)
+        [HttpPost("create/{id:guid}")]
+        public ActionResult Post(OrderServiceEntity orderService)
         {
             if (orderService == null)
             {
@@ -69,8 +68,8 @@ namespace AgileMaintenceAPI.Controllers
         }
 
 
-        [HttpPut("{id:guid}")] //Altera TODOS os dados da ordem de serviço
-        public ActionResult Put(Guid id, OrderService orderService)
+        [HttpPut("update/{id:guid}")] //Altera TODOS os dados da ordem de serviço
+        public ActionResult Put(Guid id, OrderServiceEntity orderService)
         {
             if (id != orderService.Id)
             {
@@ -83,7 +82,7 @@ namespace AgileMaintenceAPI.Controllers
             return Ok(orderService);
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("delete/{id:guid}")]
         public ActionResult Delete(Guid OrderId)
         {
             var order = _context.OrderServices.FirstOrDefault(o => o.Id != OrderId);

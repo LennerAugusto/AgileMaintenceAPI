@@ -12,7 +12,7 @@ namespace AgileMaintenceAPI.DTOs
         public DateTime DateInit { get; set; }
         public DateTime DateEnd { get; set; }
         public bool isActive { get; set; }
-        public Client Client { get; set; }
+        public ClientEntity Client { get; set; }
 
     }
 }

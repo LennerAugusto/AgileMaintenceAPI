@@ -13,7 +13,7 @@ namespace AgileMaintenceAPI.Service
             _context = context;
         }
 
-        public async Task<Client> GetClienteWithEnderecosAsync(Guid clientId)
+        public async Task<ClientEntity> GetClienteWithEnderecosAsync(Guid clientId)
         {
             return await _context.Clients.Include(c => c.Adresses).FirstOrDefaultAsync(c => c.Id == clientId);
         }

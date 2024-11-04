@@ -1,8 +1,11 @@
 ﻿using AgileMaintenceAPI.Context;
+using AgileMaintenceAPI.DTOs.AddressesDTO;
+using AgileMaintenceAPI.DTOs.ClientDTO;
 using AgileMaintenceAPI.Models;
 using AgileMaintenceAPI.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace AgileMaintenceAPI.Controllers
 {
@@ -17,8 +20,8 @@ namespace AgileMaintenceAPI.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Client>> Get()
+        [HttpGet("get-all")]
+        public ActionResult<IEnumerable<ClientEntity>> GetAllClient()
         {
             var clients = _context.Clients.ToList();
             if (clients == null)
@@ -29,8 +32,8 @@ namespace AgileMaintenceAPI.Controllers
             return clients;
         }
         
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCliente(Guid ClientId)
+        [HttpGet("get-by-id/{id}")]
+        public async Task<IActionResult> GetClientById(Guid ClientId)
         {
             var client = _context.Clients.FirstOrDefault(c => c.Id != ClientId);
             if (client == null)
@@ -41,21 +44,63 @@ namespace AgileMaintenceAPI.Controllers
             return Ok(client);
         }
 
-        [HttpPost]
-        public ActionResult Post(Client client)
+        [HttpPost("create")]
+        public async Task<ActionResult<ClientDTO>> CreateClient(ClientDTO createClientDto)
         {
-            if (client is null)
+            if (createClientDto.Adresses == null || !createClientDto.Adresses.Any())
             {
-                return BadRequest();
+                return BadRequest("At least one address must be provided.");
             }
-            _context.Clients.Add(client);
-            _context.SaveChanges();
+            var client = new ClientEntity
+            {
+                Name = createClientDto.Name,
+                Cpf = createClientDto.Cpf,
+                Phone = createClientDto.Phone,
+                IsAcive = true,
+                Adresses = new List<AdressesEntity>()
 
-            return new CreatedAtRouteResult("ObterCliente", new { id = client.Id }, client);
+            };
+
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    await _context.Clients.AddAsync(client);
+                    await _context.SaveChangesAsync(); 
+
+                    foreach (var addrDto in createClientDto.Adresses)
+                    {
+                        var address = new AdressesEntity
+                        {
+                            ClientId = client.Id, 
+                            Name = addrDto.Name,
+                            Number = addrDto.Number,
+                            Logradouro = addrDto.Logradouro,
+                            City = addrDto.City,
+                            State = addrDto.State,
+                            ZipCode = addrDto.ZipCode,
+                            IsAcive = true,
+                        };
+
+                        client.Adresses.Add(address); 
+                        await _context.Adresses.AddAsync(address); 
+                    }
+
+                    await _context.SaveChangesAsync(); 
+                    await transaction.CommitAsync(); 
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return CreatedAtAction(nameof(GetClientById), new { id = client.Id }, client);
         }
 
-        [HttpPut("{id:guid}")] //Altera TODOS os dados do cliente
-        public ActionResult Put(Guid id, Client client)
+        [HttpPut("update/{id:guid}")] 
+        public ActionResult Put(Guid id, ClientEntity client)
         {
             if(id != client.Id)
             {
@@ -67,7 +112,7 @@ namespace AgileMaintenceAPI.Controllers
             return Ok(client);
 ;       }
         
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("delete/{id:guid}")]
         public ActionResult Delete(Guid id) 
         {
             var client = _context.Clients.FirstOrDefault(c => c.Id == id);
