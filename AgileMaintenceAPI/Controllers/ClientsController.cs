@@ -30,6 +30,8 @@ namespace AgileMaintenceAPI.Controllers
                     Id = c.Id,  
                     Name = c.Name,
                     Cpf = c.Cpf,
+                    Phone = c.Phone,
+                    IsActive = c.IsAcive,
                     Adresses = c.Adresses.Select(a => new AdressesEntity
                     { 
                         ClientId = a.ClientId,
