@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace AgileMaintenceAPI.DTOs.ClientDTO
 {
-    public class ClientDTO
+    public class ClientResponseDTO
     {
-
+        public Guid Id { get; set; }
         public bool IsActive { get; set; }
         public string Name { get; set; }
         public string Cpf { get; set; }

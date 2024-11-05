@@ -21,17 +21,35 @@ namespace AgileMaintenceAPI.Controllers
         }
 
         [HttpGet("get-all")]
-        public ActionResult<IEnumerable<ClientEntity>> GetAllClient()
+        public ActionResult<IEnumerable<ClientResponseDTO>> GetAllClient()
         {
-            var clients = _context.Clients.ToList();
-            if (clients == null)
+            var clients = _context.Clients
+                .Include(c => c.Adresses) 
+                .Select(c => new ClientResponseDTO
+                {
+                    Id = c.Id,  
+                    Name = c.Name,
+                    Cpf = c.Cpf,
+                    Adresses = c.Adresses.Select(a => new AdressesEntity
+                    { 
+                        ClientId = a.ClientId,
+                        Name = a.Name,
+                        Number = a.Number,
+                        Logradouro = a.Logradouro,
+                        City = a.City,
+                        State = a.State
+                    }).ToList()
+                })
+                .ToList();
+
+            if (!clients.Any())
             {
-                return NotFound("Não existe clientes cadastrados");
+                return NotFound("Não existem clientes cadastrados");
             }
 
-            return clients;
+            return Ok(clients);
         }
-        
+
         [HttpGet("get-by-id/{id}")]
         public async Task<IActionResult> GetClientById(Guid ClientId)
         {
@@ -45,49 +63,50 @@ namespace AgileMaintenceAPI.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<ClientDTO>> CreateClient(ClientDTO createClientDto)
+        public async Task<ActionResult<ClientCreateDTO>> CreateClient(ClientCreateDTO createClientDto)
         {
-            if (createClientDto.Adresses == null || !createClientDto.Adresses.Any())
+            if (createClientDto.Adresses == null)
             {
-                return BadRequest("At least one address must be provided.");
+                return BadRequest("Nenhum Endereço criado para o cliente");
             }
-            var client = new ClientEntity
-            {
-                Name = createClientDto.Name,
-                Cpf = createClientDto.Cpf,
-                Phone = createClientDto.Phone,
-                IsAcive = true,
-                Adresses = new List<AdressesEntity>()
 
-            };
+            createClientDto.Id = Guid.NewGuid();
+
+            var addressDto = createClientDto.Adresses; 
+            addressDto.Id = Guid.NewGuid();
+            addressDto.ClientId = createClientDto.Id;
+            addressDto.IsAcive = true; 
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    await _context.Clients.AddAsync(client);
-                    await _context.SaveChangesAsync(); 
-
-                    foreach (var addrDto in createClientDto.Adresses)
+                    await _context.Clients.AddAsync(new ClientEntity
                     {
-                        var address = new AdressesEntity
-                        {
-                            ClientId = client.Id, 
-                            Name = addrDto.Name,
-                            Number = addrDto.Number,
-                            Logradouro = addrDto.Logradouro,
-                            City = addrDto.City,
-                            State = addrDto.State,
-                            ZipCode = addrDto.ZipCode,
-                            IsAcive = true,
-                        };
-
-                        client.Adresses.Add(address); 
-                        await _context.Adresses.AddAsync(address); 
+                        Id = createClientDto.Id,
+                        Name = createClientDto.Name,
+                        Cpf = createClientDto.Cpf,
+                        Phone = createClientDto.Phone,
+                        IsAcive = true,
+                        Adresses = new List<AdressesEntity>
+                {
+                    new AdressesEntity
+                    {
+                        Id = addressDto.Id,
+                        ClientId = addressDto.ClientId,
+                        Name = addressDto.Name,
+                        Number = addressDto.Number,
+                        Logradouro = addressDto.Logradouro,
+                        City = addressDto.City,
+                        State = addressDto.State,
+                        ZipCode = addressDto.ZipCode,
+                        IsAcive = addressDto.IsAcive,
                     }
+                }
+                    });
 
-                    await _context.SaveChangesAsync(); 
-                    await transaction.CommitAsync(); 
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
                 }
                 catch (Exception ex)
                 {
@@ -96,8 +115,11 @@ namespace AgileMaintenceAPI.Controllers
                 }
             }
 
-            return CreatedAtAction(nameof(GetClientById), new { id = client.Id }, client);
+            return CreatedAtAction(nameof(GetClientById), new { id = createClientDto.Id }, createClientDto);
         }
+
+
+
 
         [HttpPut("update/{id:guid}")] 
         public ActionResult Put(Guid id, ClientEntity client)

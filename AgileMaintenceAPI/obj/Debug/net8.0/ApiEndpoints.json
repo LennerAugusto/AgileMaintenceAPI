@@ -108,13 +108,13 @@
     "Parameters": [
       {
         "Name": "createClientDto",
-        "Type": "AgileMaintenceAPI.DTOs.ClientDTO.ClientDTO",
+        "Type": "AgileMaintenceAPI.DTOs.ClientDTO.ClientCreateDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "AgileMaintenceAPI.DTOs.ClientDTO.ClientDTO",
+        "Type": "AgileMaintenceAPI.DTOs.ClientDTO.ClientCreateDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -150,7 +150,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[AgileMaintenceAPI.Models.ClientEntity, AgileMaintenceAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[AgileMaintenceAPI.DTOs.ClientDTO.ClientResponseDTO, AgileMaintenceAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -205,19 +205,14 @@
   {
     "ContainingType": "AgileMaintenceAPI.Controllers.OrdersServicesController",
     "Method": "Post",
-    "RelativePath": "api/order-services/create/{id}",
+    "RelativePath": "api/order-services/create",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "orderService",
-        "Type": "AgileMaintenceAPI.Models.OrderServiceEntity",
-        "IsRequired": true
-      },
-      {
-        "Name": "id",
-        "Type": "",
+        "Name": "orderServiceDto",
+        "Type": "AgileMaintenceAPI.DTOs.OrderServices.OrderServiceCreateDTO",
         "IsRequired": true
       }
     ],
@@ -246,7 +241,7 @@
   },
   {
     "ContainingType": "AgileMaintenceAPI.Controllers.OrdersServicesController",
-    "Method": "GetOrderServices",
+    "Method": "GetAll",
     "RelativePath": "api/order-services/get-all",
     "HttpMethod": "GET",
     "IsController": true,
@@ -254,7 +249,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[AgileMaintenceAPI.DTOs.OrderServiceDTO, AgileMaintenceAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[AgileMaintenceAPI.Models.OrderServiceEntity, AgileMaintenceAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -266,7 +261,33 @@
   },
   {
     "ContainingType": "AgileMaintenceAPI.Controllers.OrdersServicesController",
-    "Method": "Get",
+    "Method": "GetOrderServicesByClientId",
+    "RelativePath": "api/order-services/get-by-clientid{ClientId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ClientId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[AgileMaintenceAPI.DTOs.OrderServices.OrderServiceDTO, AgileMaintenceAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AgileMaintenceAPI.Controllers.OrdersServicesController",
+    "Method": "GetById",
     "RelativePath": "api/order-services/get-by-id/{id}",
     "HttpMethod": "GET",
     "IsController": true,

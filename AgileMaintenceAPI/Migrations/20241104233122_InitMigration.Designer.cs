@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgileMaintenceAPI.Migrations
 {
     [DbContext(typeof(AgileMaintenceAPIContext))]
-    [Migration("20241104184920_FixData")]
-    partial class FixData
+    [Migration("20241104233122_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,9 +34,6 @@ namespace AgileMaintenceAPI.Migrations
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<Guid?>("ClientEntityId")
-                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("ClientId")
                         .HasColumnType("char(36)");
@@ -65,7 +62,7 @@ namespace AgileMaintenceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientEntityId");
+                    b.HasIndex("ClientId");
 
                     b.ToTable("Adresses");
                 });
@@ -135,9 +132,13 @@ namespace AgileMaintenceAPI.Migrations
 
             modelBuilder.Entity("AgileMaintenceAPI.Models.AdressesEntity", b =>
                 {
-                    b.HasOne("AgileMaintenceAPI.Models.ClientEntity", null)
+                    b.HasOne("AgileMaintenceAPI.Models.ClientEntity", "Client")
                         .WithMany("Adresses")
-                        .HasForeignKey("ClientEntityId");
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("AgileMaintenceAPI.Models.OrderServiceEntity", b =>

@@ -32,9 +32,6 @@ namespace AgileMaintenceAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid?>("ClientEntityId")
-                        .HasColumnType("char(36)");
-
                     b.Property<Guid>("ClientId")
                         .HasColumnType("char(36)");
 
@@ -62,7 +59,7 @@ namespace AgileMaintenceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientEntityId");
+                    b.HasIndex("ClientId");
 
                     b.ToTable("Adresses");
                 });
@@ -132,9 +129,13 @@ namespace AgileMaintenceAPI.Migrations
 
             modelBuilder.Entity("AgileMaintenceAPI.Models.AdressesEntity", b =>
                 {
-                    b.HasOne("AgileMaintenceAPI.Models.ClientEntity", null)
+                    b.HasOne("AgileMaintenceAPI.Models.ClientEntity", "Client")
                         .WithMany("Adresses")
-                        .HasForeignKey("ClientEntityId");
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("AgileMaintenceAPI.Models.OrderServiceEntity", b =>
