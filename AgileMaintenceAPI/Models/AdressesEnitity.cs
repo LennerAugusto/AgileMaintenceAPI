@@ -1,10 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AgileMaintenceAPI.Models
 {
-    public class Adresses
-    { 
-        public Guid Id { get; set; }
+    [Table("Adresses")]
+    public class AdressesEntity : BaseEnitty
+    {
         public Guid ClientId { get; set; }
         public string Name { get; set; }
         public string Number { get; set; }
@@ -12,8 +14,8 @@ namespace AgileMaintenceAPI.Models
         public string City { get; set; }
         public string State { get; set; }
         public int ZipCode { get; set; }
-        public DateTime DateCreated { get; set; } 
-        public DateTime DateUpdated { get; set; }  
-        public Client Client { get; set; }
+        
+        [JsonIgnore]
+        public ClientEntity? Client { get; set; }
     }
 }

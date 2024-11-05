@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AgileMaintenceAPI.Controllers
 {
-    [Route("api/adress")]
+    [Route("api/address")]
     [ApiController]
     public class AdressesController : ControllerBase
     {
@@ -16,8 +16,8 @@ namespace AgileMaintenceAPI.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public ActionResult Post(Adresses adress)
+        [HttpPost("create")]
+        public ActionResult Post(AdressesEntity adress)
         {
             if (adress == null)
             {
@@ -30,8 +30,8 @@ namespace AgileMaintenceAPI.Controllers
             return Ok(adress);
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Adresses>> Get()
+        [HttpGet("address-get-all")]
+        public ActionResult<IEnumerable<AdressesEntity>> Get()
         {
             var adresses = _context.Adresses.ToList();
             if (adresses == null)
@@ -42,12 +42,12 @@ namespace AgileMaintenceAPI.Controllers
             return adresses;
         }
 
-        [HttpGet("address-by-client/{Clientid:guid}/")]
-        public ActionResult<IEnumerable<object>> GetAddressClient(Guid id)
+        [HttpGet("address-by-client-id/{Clientid:guid}/")]
+        public ActionResult<IEnumerable<object>> GetAddressClient(Guid ClientId)
         {
            
             var adresses = _context.Adresses
-                .Include(a => a.Client)
+                .Include(a => a.ClientId == ClientId)
                 .Select(a => new
                 {
                     a.Id,
@@ -56,16 +56,7 @@ namespace AgileMaintenceAPI.Controllers
                     a.Number,
                     a.Logradouro,
                     a.City,
-                    a.State,
-
-                    Client = new
-                    {
-                        a.Client.Id,
-                        a.Client.Name,
-                        a.Client.Cpf,
-                        a.Client.Phone,
-                        a.Client.IsActive,
-                    }
+                    a.State
                 })
                 .ToList();
 
@@ -76,8 +67,35 @@ namespace AgileMaintenceAPI.Controllers
 
             return Ok(adresses);
         }
+
+        [HttpPut("update/{id:guid}")]
+        public ActionResult Put(Guid id, AdressesEntity adresses)
+        {
+            if (id != adresses.Id)
+            {
+                return BadRequest("Endereço solicitado não existe");
+            }
+            _context.Entry(adresses).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(adresses);
+            ;
+        }
+
+        [HttpDelete("delete/{id:guid}")]
+        public ActionResult Delete(Guid id)
+        {
+            var adress = _context.Clients.FirstOrDefault(a => a.Id == id);
+            if (adress == null)
+            {
+                return NotFound("Endereço não encontrado");
+            }
+            _context.Clients.Remove(adress);
+            _context.SaveChanges();
+            return Ok(adress);
+        }
     }
+
 }
 
 
-//d0491ba5-542c-4b60-993c-959f4200be51

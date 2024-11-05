@@ -1,12 +1,12 @@
 ﻿using AgileMaintenceAPI.Context;
-using AgileMaintenceAPI.DTOs;
+using AgileMaintenceAPI.DTOs.OrderServices;
 using AgileMaintenceAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgileMaintenceAPI.Controllers
 {
-    [Route("api/orderservices")]
+    [Route("api/order-services")]
     [ApiController]
     public class OrdersServicesController : ControllerBase
     {
@@ -17,10 +17,12 @@ namespace AgileMaintenceAPI.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<OrderServiceDTO>> GetOrderServices()
+        [HttpGet("get-by-clientid{ClientId:guid}")]
+        public ActionResult<IEnumerable<OrderServiceDTO>> GetOrderServicesByClientId(Guid ClientId)
         {
-            var orderServices = _context.OrderServices.Include(os => os.Client).Select(os => new OrderServiceDTO
+            var orderServices = _context.OrderServices.Include(os => os.Client)
+                .Where(os => os.Id == ClientId)
+                .Select(os => new OrderServiceCreateDTO
             {
                 Id = os.Id,
                 ClientId = os.ClientId,
@@ -29,8 +31,6 @@ namespace AgileMaintenceAPI.Controllers
                 Defect = os.Defect,
                 DateInit = os.DateInit,
                 DateEnd = os.DateEnd,
-                isActive = os.IsActive,
-                Client = os.Client
             }).ToList();
 
             if (orderServices == null || !orderServices.Any())
@@ -41,8 +41,8 @@ namespace AgileMaintenceAPI.Controllers
             return Ok(orderServices);
         }
 
-        [HttpGet("{id:guid}")]
-        public ActionResult<OrderService> Get(Guid OrderId)
+        [HttpGet("get-by-id/{id:guid}")]
+        public ActionResult<OrderServiceEntity> GetById(Guid OrderId)
         {
             var order = _context.OrderServices.FirstOrDefault(o => o.Id != OrderId);
             if (order == null)
@@ -53,24 +53,46 @@ namespace AgileMaintenceAPI.Controllers
             return order;
         }
 
-
-        [HttpPost]
-        public ActionResult Post(OrderService orderService)
+        [HttpGet("get-all")]
+        public ActionResult<List<OrderServiceEntity>> GetAll()
         {
-            if (orderService == null)
+            var order = _context.OrderServices.ToList();
+            if (order == null)
+            {
+                return NotFound("Nenhuma ordem de serviço encontrada");
+            }
+
+            return order;
+        }
+
+
+        [HttpPost("create")]
+        public ActionResult Post(OrderServiceCreateDTO orderServiceDto)
+        {
+            if (orderServiceDto == null)
             {
                 return BadRequest();
             }
 
-            _context.OrderServices.Add(orderService);
+            var orderServiceEntity = new OrderServiceEntity
+            {
+                Id = Guid.NewGuid(),
+                ClientId = orderServiceDto.ClientId,
+                Vehicle = orderServiceDto.Vehicle,
+                Plate = orderServiceDto.Plate,
+                Defect = orderServiceDto.Defect,
+                DateInit = orderServiceDto.DateInit,
+                DateEnd = orderServiceDto.DateEnd,
+            };
+
+            _context.OrderServices.Add(orderServiceEntity);
             _context.SaveChanges();
 
-            return Ok(orderService);
+            return Ok(orderServiceEntity);
         }
 
-
-        [HttpPut("{id:guid}")] //Altera TODOS os dados da ordem de serviço
-        public ActionResult Put(Guid id, OrderService orderService)
+        [HttpPut("update/{id:guid}")] 
+        public ActionResult Put(Guid id, OrderServiceEntity orderService)
         {
             if (id != orderService.Id)
             {
@@ -83,7 +105,7 @@ namespace AgileMaintenceAPI.Controllers
             return Ok(orderService);
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("delete/{id:guid}")]
         public ActionResult Delete(Guid OrderId)
         {
             var order = _context.OrderServices.FirstOrDefault(o => o.Id != OrderId);

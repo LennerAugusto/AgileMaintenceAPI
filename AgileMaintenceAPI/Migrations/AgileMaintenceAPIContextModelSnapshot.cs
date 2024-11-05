@@ -22,7 +22,7 @@ namespace AgileMaintenceAPI.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("AgileMaintenceAPI.Models.Adresses", b =>
+            modelBuilder.Entity("AgileMaintenceAPI.Models.AdressesEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,11 +35,8 @@ namespace AgileMaintenceAPI.Migrations
                     b.Property<Guid>("ClientId")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime(6)");
+                    b.Property<bool>("IsAcive")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Logradouro")
                         .IsRequired()
@@ -67,7 +64,7 @@ namespace AgileMaintenceAPI.Migrations
                     b.ToTable("Adresses");
                 });
 
-            modelBuilder.Entity("AgileMaintenceAPI.Models.Client", b =>
+            modelBuilder.Entity("AgileMaintenceAPI.Models.ClientEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,7 +74,7 @@ namespace AgileMaintenceAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool>("IsAcive")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
@@ -90,10 +87,10 @@ namespace AgileMaintenceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Client");
                 });
 
-            modelBuilder.Entity("AgileMaintenceAPI.Models.OrderService", b =>
+            modelBuilder.Entity("AgileMaintenceAPI.Models.OrderServiceEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -112,7 +109,7 @@ namespace AgileMaintenceAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool>("IsAcive")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Plate")
@@ -127,12 +124,12 @@ namespace AgileMaintenceAPI.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("OrderServices");
+                    b.ToTable("OrderService");
                 });
 
-            modelBuilder.Entity("AgileMaintenceAPI.Models.Adresses", b =>
+            modelBuilder.Entity("AgileMaintenceAPI.Models.AdressesEntity", b =>
                 {
-                    b.HasOne("AgileMaintenceAPI.Models.Client", "Client")
+                    b.HasOne("AgileMaintenceAPI.Models.ClientEntity", "Client")
                         .WithMany("Adresses")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -141,9 +138,9 @@ namespace AgileMaintenceAPI.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("AgileMaintenceAPI.Models.OrderService", b =>
+            modelBuilder.Entity("AgileMaintenceAPI.Models.OrderServiceEntity", b =>
                 {
-                    b.HasOne("AgileMaintenceAPI.Models.Client", "Client")
+                    b.HasOne("AgileMaintenceAPI.Models.ClientEntity", "Client")
                         .WithMany("OrderServices")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -152,7 +149,7 @@ namespace AgileMaintenceAPI.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("AgileMaintenceAPI.Models.Client", b =>
+            modelBuilder.Entity("AgileMaintenceAPI.Models.ClientEntity", b =>
                 {
                     b.Navigation("Adresses");
 
