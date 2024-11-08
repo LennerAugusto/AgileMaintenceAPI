@@ -12,6 +12,7 @@ namespace AgileMaintenceAPI.Models
         public string Cpf { get; set; }
         public string Phone { get; set; }
 
+        public Guid AutoRePairId { get; set; }
         public ICollection<AdressesEntity>? Adresses { get; set; }
         [JsonIgnore]
         public ICollection<OrderServiceEntity>? OrderServices  { get; set; }

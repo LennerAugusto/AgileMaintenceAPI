@@ -13,12 +13,14 @@ namespace AgileMaintenceAPI.Context
         public DbSet<ClientEntity> Clients { get; set; }  
         public DbSet<OrderServiceEntity> OrderServices { get; set; }  
         public DbSet<AdressesEntity> Adresses { get; set; }
+        public DbSet<AutoRepairEntity> AutoRepairs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            
+            modelBuilder.Entity<AutoRepairEntity>().HasKey(e => e.Id);
+
             modelBuilder.Entity<ClientEntity>()
                 .HasMany(c => c.Adresses)
                 .WithOne(a => a.Client)

@@ -12,6 +12,7 @@ namespace AgileMaintenceAPI.Models
         public string Defect { get; set; }
         public DateTime DateInit {  get; set; }
         public DateTime DateEnd { get; set; }   
+        public Guid AutoRepairID { get; set; }
         public ClientEntity Client { get; set; }
     }
 }

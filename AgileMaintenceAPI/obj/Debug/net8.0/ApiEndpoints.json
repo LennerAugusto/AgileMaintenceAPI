@@ -99,6 +99,105 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "AgileMaintenceAPI.Controllers.AutoRepairController",
+    "Method": "Post",
+    "RelativePath": "api/auto-repair/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "autoRepair",
+        "Type": "AgileMaintenceAPI.Models.AutoRepairEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AgileMaintenceAPI.Controllers.AutoRepairController",
+    "Method": "Delete",
+    "RelativePath": "api/auto-repair/delete/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AgileMaintenceAPI.Controllers.AutoRepairController",
+    "Method": "Get",
+    "RelativePath": "api/auto-repair/get-all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[AgileMaintenceAPI.Models.AutoRepairEntity, AgileMaintenceAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AgileMaintenceAPI.Controllers.AutoRepairController",
+    "Method": "GetAddressClient",
+    "RelativePath": "api/auto-repair/get-by-id/{AutoRepairId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "AutoRepairId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AgileMaintenceAPI.Controllers.AutoRepairController",
+    "Method": "Put",
+    "RelativePath": "api/auto-repair/update/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "autoRepair",
+        "Type": "AgileMaintenceAPI.Models.AutoRepairEntity",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "AgileMaintenceAPI.Controllers.ClientsController",
     "Method": "CreateClient",
     "RelativePath": "api/clients/create",
